@@ -48,8 +48,8 @@ class TransitionSegmentView: UIView {
     private var topContainer: UIScrollView?
     
     
-    init(frame: CGRect,configure: SegmentConfigure) {
-        super.init(frame:frame)
+    init(frame: CGRect, configure: SegmentConfigure) {
+        super.init(frame: frame)
         
         self.configure = configure
         self.configUI()
@@ -135,12 +135,12 @@ class TransitionSegmentView: UIView {
     }
     
     //设置闭包
-    func setScrollClosure(tempClosure:@escaping SegmentClosureType) {
+    func setScrollClosure(tempClosure: @escaping SegmentClosureType) {
         self.scrollClosure = tempClosure
     }
     
     // 点击手势方法
-    @objc func tap(sender:UITapGestureRecognizer) {
+    @objc func tap(sender: UITapGestureRecognizer) {
         let item:UILabel = sender.view as! UILabel
         let index = item.tag
         
@@ -148,7 +148,7 @@ class TransitionSegmentView: UIView {
     }
     
     // scrollViewDidScroll调用
-    func segmentWillMove(point:CGPoint) {
+    func segmentWillMove(point: CGPoint) {
         
         let index = Int(point.x/screenWidth)
         let remainder = point.x/screenWidth - CGFloat(index)
@@ -192,10 +192,9 @@ class TransitionSegmentView: UIView {
     
     
     //scrollViewDidEndScrollingAnimation方法调用
-    func segmentDidEndMove(point:CGPoint)  {
+    func segmentDidEndMove(point: CGPoint)  {
         //四舍五入
         let index = lroundf(Float(point.x/screenWidth))
-        
         for view in (bottomContainer?.subviews)! {
             
             if index == (view.tag - 100) {
@@ -224,7 +223,7 @@ class TransitionSegmentView: UIView {
     }
     
     //切割高亮区域
-    func clipView(view:UIView)  {
+    func clipView(view: UIView)  {
         let rect = CGRect(x: widthAddition/4, y: heightAddtion/4, width: view.width-widthAddition/2, height: view.height-widthAddition/2)
         let bezierPath = UIBezierPath.init(roundedRect: rect, cornerRadius: cornerRadius)
         let maskLayer = CAShapeLayer()
