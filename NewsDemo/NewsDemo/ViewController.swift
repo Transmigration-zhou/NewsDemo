@@ -21,6 +21,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var dataArray = [News]()
     var titles: [String] = []
     
+//    var tableViewArray: [UITableView] = []
     var tableView: UITableView?
     
     override func viewDidLoad() {
@@ -48,6 +49,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         segmentView = TransitionSegmentView.init(frame: rect, configure: configure)
         
+        //segment的label被点击时调用
         segmentView?.setScrollClosure(tempClosure: { (index) in
             let point = CGPoint(x: CGFloat(index)*screenWidth, y: 0)
             self.scrollContainer?.setContentOffset(point, animated: true)
@@ -60,15 +62,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // scrollview容器
         scrollContainer = UIScrollView.init(frame: CGRect(x: 0, y: 99, width: screenWidth, height: screenHeight-99))
         
-//        for i in 0...100 {
-//            dataArray.append(News(_title: String(i), _date: String(i) ,_thumb: String(i), _source: String(i)))
-//        }
-        
-        requestNewsAPI()
+        for i in 0...10 {
+            dataArray.append(News(_title: String(i), _date: String(i) ,_thumb: String(i), _source: String(i)))
+        }
         
         for index in 0...titles.count {
             setupTableView(index)
             scrollContainer?.addSubview(tableView!)
+            requestNewsAPI(index)
         }
         
         //配置scrollview容器
@@ -88,7 +89,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     //请求新闻数据
-    func requestNewsAPI() {
+    func requestNewsAPI(_ index: Int) {
         let url = "http://v.juhe.cn/toutiao/index?type=top&key=92d7759f604c067117f975624fdd5185"
         weak var weakSelf = self
         Alamofire.request(url, method: .post, parameters: nil, encoding: JSONEncoding.default)
@@ -105,13 +106,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     let dict = JSON(json)
                     let data =  dict["result"]["data"].arrayValue
         
-                    weakSelf?.paraseNewsInfo(data)
+                    weakSelf?.paraseNewsInfo(data, index)
                 }
         }
     }
     
     //解析新闻数据
-    func paraseNewsInfo(_ dateArray: [JSON]) {
+    func paraseNewsInfo(_ dateArray: [JSON], _ index: Int) {
         print(dateArray)
         for item in dateArray {
             let title = item["title"].stringValue
@@ -126,8 +127,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView?.reloadData()
     }
 
-    private func setupTableView(_ index: Int){
+    private func setupTableView(_ index: Int) {
         tableView = UITableView.init()
+//        tableViewArray.append(tableView)
         tableView?.frame = CGRect(x: CGFloat(index)*screenWidth, y: 0, width: (scrollContainer?.bounds.width)!, height: (scrollContainer?.bounds.height)!)
         tableView?.separatorStyle = .none
         tableView?.delegate = self
@@ -168,11 +170,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 }
 
 extension ViewController: UIScrollViewDelegate {
-    
+
     //scollview滑动代理
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let point = scrollView.contentOffset
-        segmentView?.segmentWillMove(point: point)
+        if(scrollView == scrollContainer) {
+            let point = scrollView.contentOffset
+            segmentView?.segmentWillMove(point: point)
+        }
     }
     
     //scollview开始减速代理
@@ -182,8 +186,10 @@ extension ViewController: UIScrollViewDelegate {
     
     //scollview停止减速代理
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        let point = scrollView.contentOffset
-        segmentView?.segmentDidEndMove(point: point)
+        if(scrollView == scrollContainer) {
+            let point = scrollView.contentOffset
+            segmentView?.segmentDidEndMove(point: point)
+        }
     }
-    
 }
+
