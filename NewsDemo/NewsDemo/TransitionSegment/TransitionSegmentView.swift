@@ -48,7 +48,7 @@ class TransitionSegmentView: UIView {
     private var topContainer: UIScrollView?
     
     
-    init(frame: CGRect,configure:SegmentConfigure) {
+    init(frame: CGRect,configure: SegmentConfigure) {
         super.init(frame:frame)
         
         self.configure = configure
