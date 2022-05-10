@@ -60,10 +60,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // scrollview容器
         scrollContainer = UIScrollView.init(frame: CGRect(x: 0, y: 99, width: screenWidth, height: screenHeight-99))
         
-        for index in 0...(titles.count) {
-            setupTableView()
+//        for i in 0...100 {
+//            dataArray.append(News(_title: String(i), _date: String(i) ,_thumb: String(i), _source: String(i)))
+//        }
+        
+        requestNewsAPI()
+        
+        for index in 0...titles.count {
+            setupTableView(index)
             scrollContainer?.addSubview(tableView!)
-            requestNewsAPI()
         }
         
         //配置scrollview容器
@@ -121,9 +126,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView?.reloadData()
     }
 
-    private func setupTableView(){
+    private func setupTableView(_ index: Int){
         tableView = UITableView.init()
-        tableView?.frame = view.bounds
+        tableView?.frame = CGRect(x: CGFloat(index)*screenWidth, y: 0, width: (scrollContainer?.bounds.width)!, height: (scrollContainer?.bounds.height)!)
         tableView?.separatorStyle = .none
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -182,7 +187,3 @@ extension ViewController: UIScrollViewDelegate {
     }
     
 }
-
-
-
-
